@@ -236,35 +236,49 @@ const formatUSD = (val: number) => {
               class="shadow-2xl ring-1 ring-slate-200 dark:ring-slate-800"
             >
               <template #header>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <div class="flex p-2 bg-primary/10 rounded-lg">
+                <div class="flex items-start justify-between">
+                  <div class="flex items-start gap-2">
+                    <div class="flex p-2 bg-primary/10 rounded-lg mt-1">
                       <UIcon
                         name="i-heroicons-adjustments-vertical"
                         class="w-5 h-5 text-primary"
                       />
                     </div>
-                    <h2 class="font-bold">Muafiyet Tablosu</h2>
+                    <div>
+                      <h2 class="font-bold">Faiz İşletilmeyecek Tutar</h2>
+                      <p
+                        class="text-[10px] text-slate-500 font-medium leading-tight mt-1"
+                      >
+                        Toplam bakiyenizden bu tutarlar düşüldükten sonra kalan
+                        miktar üzerinden günlük faiz hesaplanır.
+                      </p>
+                    </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <UButton
-                      color="error"
-                      variant="subtle"
-                      icon="i-heroicons-trash"
-                      size="xs"
-                      @click="clearTiers"
-                    >
-                      Temizle
-                    </UButton>
-                    <UButton
-                      color="primary"
-                      variant="subtle"
-                      icon="i-heroicons-plus"
-                      size="xs"
-                      @click="addTier"
-                    >
-                      Ekle
-                    </UButton>
+                    <UTooltip>
+                      <UButton
+                        color="error"
+                        variant="subtle"
+                        icon="i-heroicons-trash"
+                        size="xs"
+                        @click="clearTiers"
+                      />
+                      <template #content>
+                        <p>Temizle</p>
+                      </template>
+                    </UTooltip>
+                    <UTooltip>
+                      <UButton
+                        color="primary"
+                        variant="subtle"
+                        icon="i-heroicons-plus"
+                        size="xs"
+                        @click="addTier"
+                      />
+                      <template #content>
+                        <p>Ekle</p>
+                      </template>
+                    </UTooltip>
                   </div>
                 </div>
               </template>
