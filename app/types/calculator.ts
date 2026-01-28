@@ -34,6 +34,8 @@ export interface TierSummary {
 export interface CalculationResponse {
   totalBalance: number;
   totalNetProfit: number;
+  usdInitial: number;
+  usdFinalValue: number;
   usdProfitLoss: number;
   tierSummary: TierSummary[];
 }

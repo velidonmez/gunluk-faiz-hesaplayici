@@ -89,6 +89,8 @@ export default defineEventHandler(async (event) => {
   return {
     totalBalance: Number(totalBalance.toFixed(2)),
     totalNetProfit: Number(totalNetProfit.toFixed(2)),
+    usdInitial: Number(usdInitial.toFixed(2)),
+    usdFinalValue: Number(usdFinalValue.toFixed(2)),
     usdProfitLoss: Number(usdProfitLoss.toFixed(2)),
     tierSummary: Array.from(tierStats.values()),
   } as CalculationResponse;

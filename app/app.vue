@@ -114,6 +114,8 @@ const formatUSD = (val: number) => {
     currency: "USD",
   }).format(val);
 };
+
+const isPerformanceModalOpen = ref(false);
 </script>
 
 <template>
@@ -133,16 +135,18 @@ const formatUSD = (val: number) => {
               to="https://github.com/velidonmez/gunluk-faiz-hesaplayici"
               target="_blank"
             />
-            <UButton
-              :icon="
-                isDark
-                  ? 'i-heroicons-moon-20-solid'
-                  : 'i-heroicons-sun-20-solid'
-              "
-              color="neutral"
-              variant="ghost"
-              @click="isDark = !isDark"
-            />
+            <ClientOnly>
+              <UButton
+                :icon="
+                  isDark
+                    ? 'i-heroicons-moon-20-solid'
+                    : 'i-heroicons-sun-20-solid'
+                "
+                color="neutral"
+                variant="ghost"
+                @click="isDark = !isDark"
+              />
+            </ClientOnly>
           </div>
           <div class="text-center">
             <h1
@@ -476,12 +480,190 @@ const formatUSD = (val: number) => {
                     </div>
                     <h2 class="font-bold text-lg">Dilim Bazlı Kazanç Detayı</h2>
                   </div>
-                  <UBadge
-                    color="neutral"
-                    variant="solid"
-                    class="rounded-full px-3 py-1 text-[10px] font-black"
-                    >Performans Özeti</UBadge
+                  <UModal
+                    title="Performans Detayları ve Analiz"
+                    :description="`${form.days} Günlük Simülasyon Verileri`"
+                    :ui="{ content: 'sm:max-w-2xl' }"
                   >
+                    <UButton
+                      label="Detayları Gör"
+                      color="neutral"
+                      variant="subtle"
+                      icon="i-heroicons-magnifying-glass-circle"
+                      size="sm"
+                      class="rounded-full font-bold"
+                    />
+
+                    <template #body>
+                      <div class="space-y-6">
+                        <!-- USD Comparison Section -->
+                        <div
+                          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                          v-if="result"
+                        >
+                          <div
+                            class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800"
+                          >
+                            <div
+                              class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1"
+                            >
+                              Başlangıç Senaryosu
+                            </div>
+                            <div
+                              class="text-sm font-medium text-slate-500 mb-2"
+                            >
+                              İlk gün ana parayla USD alıp bekleseydiniz:
+                            </div>
+                            <div
+                              class="text-2xl font-black text-slate-900 dark:text-white"
+                            >
+                              {{ formatUSD(result.usdInitial) }}
+                            </div>
+                            <div class="text-[10px] text-slate-400 mt-1 italic">
+                              (Kur: {{ formatCurrency(form.usdStartRate) }})
+                            </div>
+                          </div>
+
+                          <div
+                            class="p-4 rounded-2xl border transition-all"
+                            :class="
+                              result.usdProfitLoss >= 0
+                                ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-100 dark:border-emerald-500/20'
+                                : 'bg-red-50/50 dark:bg-red-500/5 border-red-100 dark:border-red-500/20'
+                            "
+                          >
+                            <div
+                              class="text-[10px] font-black uppercase tracking-widest mb-1"
+                              :class="
+                                result.usdProfitLoss >= 0
+                                  ? 'text-emerald-500'
+                                  : 'text-red-500'
+                              "
+                            >
+                              Mevduat Sonucu
+                            </div>
+                            <div
+                              class="text-sm font-medium text-slate-500 mb-2"
+                            >
+                              Bileşik faiz sonrası bakiye dolar karşılığı:
+                            </div>
+                            <div
+                              class="text-2xl font-black"
+                              :class="
+                                result.usdProfitLoss >= 0
+                                  ? 'text-emerald-600 dark:text-emerald-400'
+                                  : 'text-red-600 dark:text-red-400'
+                              "
+                            >
+                              {{ formatUSD(result.usdFinalValue) }}
+                            </div>
+                            <div
+                              class="text-[10px] mt-1 italic"
+                              :class="
+                                result.usdProfitLoss >= 0
+                                  ? 'text-emerald-500/70'
+                                  : 'text-red-500/70'
+                              "
+                            >
+                              (Hedef Kur: {{ formatCurrency(form.usdEndRate) }})
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Summary Message -->
+                        <div
+                          v-if="result"
+                          class="p-4 rounded-xl text-sm font-medium leading-relaxed"
+                          :class="
+                            result.usdProfitLoss >= 0
+                              ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                              : 'bg-red-500/10 text-red-700 dark:text-red-300'
+                          "
+                        >
+                          <div class="flex items-center gap-2 mb-1">
+                            <UIcon
+                              :name="
+                                result.usdProfitLoss >= 0
+                                  ? 'i-heroicons-sparkles'
+                                  : 'i-heroicons-exclamation-triangle'
+                              "
+                              class="w-5 h-5"
+                            />
+                            <span class="font-bold">Analiz Özeti:</span>
+                          </div>
+                          {{
+                            result.usdProfitLoss >= 0
+                              ? `Mevduat yatırımınız, dolar yatırımına kıyasla ${formatUSD(result.usdProfitLoss)} daha fazla getiri sağladı. Faiz oranları kur artışını kompanse etti.`
+                              : `Dolar yatırımı yapsaydınız ${formatUSD(Math.abs(result.usdProfitLoss))} daha kârda olacaktınız. Kur artışı faiz getirisinden yüksek kaldı.`
+                          }}
+                        </div>
+
+                        <!-- Tier Detail Table (Simplified for Modal) -->
+                        <div
+                          class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden"
+                        >
+                          <div
+                            class="bg-slate-50 dark:bg-slate-900 px-4 py-3 border-b border-slate-200 dark:border-slate-800"
+                          >
+                            <h4
+                              class="text-xs font-black uppercase tracking-widest text-slate-500"
+                            >
+                              Dilim Bazlı Kırılım
+                            </h4>
+                          </div>
+                          <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                              <thead
+                                class="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800"
+                              >
+                                <tr>
+                                  <th
+                                    class="px-4 py-3 font-black text-slate-400"
+                                  >
+                                    Dilim
+                                  </th>
+                                  <th
+                                    class="px-4 py-3 font-black text-slate-400 text-center"
+                                  >
+                                    Gün
+                                  </th>
+                                  <th
+                                    class="px-4 py-3 font-black text-slate-400 text-right"
+                                  >
+                                    Net Faiz
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody
+                                class="divide-y divide-slate-100 dark:divide-slate-800"
+                              >
+                                <tr
+                                  v-for="(row, idx) in result.tierSummary"
+                                  :key="idx"
+                                >
+                                  <td
+                                    class="px-4 py-3 font-bold text-slate-700 dark:text-slate-300"
+                                  >
+                                    %{{ row.rate * 100 }}
+                                  </td>
+                                  <td
+                                    class="px-4 py-3 text-center text-slate-600 dark:text-slate-400"
+                                  >
+                                    {{ row.daysPassed }}
+                                  </td>
+                                  <td
+                                    class="px-4 py-3 text-right font-bold text-emerald-600 dark:text-emerald-400"
+                                  >
+                                    +{{ formatCurrency(row.interestEarned) }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </UModal>
                 </div>
               </template>
 
