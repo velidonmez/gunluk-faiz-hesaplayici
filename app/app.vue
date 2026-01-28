@@ -123,7 +123,16 @@ const formatUSD = (val: number) => {
     >
       <UContainer>
         <header class="mb-8 relative">
-          <div class="absolute right-0 top-0 pt-2 pr-2 md:pr-0">
+          <div
+            class="absolute right-0 top-0 pt-2 pr-2 md:pr-0 flex items-center gap-1"
+          >
+            <UButton
+              icon="i-simple-icons-github"
+              color="neutral"
+              variant="ghost"
+              to="https://github.com/velidonmez/gunluk-faiz-hesaplayici"
+              target="_blank"
+            />
             <UButton
               :icon="
                 isDark
@@ -572,6 +581,18 @@ const formatUSD = (val: number) => {
       <footer
         class="mt-16 md:mb-32 pt-8 border-t border-slate-200 dark:border-slate-800 max-w-4xl mx-auto text-center px-4"
       >
+        <div class="flex items-center justify-center gap-4 mb-6">
+          <UButton
+            icon="i-simple-icons-github"
+            label="GitHub'da İncele"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+            to="https://github.com/velidonmez/gunluk-faiz-hesaplayici"
+            target="_blank"
+            class="rounded-full"
+          />
+        </div>
         <p
           class="text-[11px] leading-relaxed text-slate-400 dark:text-slate-500 font-medium italic"
         >

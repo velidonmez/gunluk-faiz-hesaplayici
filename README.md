@@ -29,8 +29,8 @@ Bu projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izl
 1.  **Depoyu Klonlayın:**
 
     ```bash
-    git clone https://github.com/kullanici/interest-calculator.git
-    cd interest-calculator
+    git clone https://github.com/velidonmez/gunluk-faiz-hesaplayici.git
+    cd gunluk-faiz-hesaplayici
     ```
 
 2.  **Bağımlılıkları Yükleyin:**
