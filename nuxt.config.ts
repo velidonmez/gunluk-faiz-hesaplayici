@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2025-07-15",
   runtimeConfig: {
-    twelveDataApiKey: process.env.TWELVE_DATA_API_KEY,
+    twelveDataApiKey: "", // overridden by NUXT_TWELVE_DATA_API_KEY
   },
   devtools: { enabled: true },
 });

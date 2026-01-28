@@ -4,8 +4,8 @@ import type {
   RateResult,
 } from "../../app/types/rates";
 
-export default defineEventHandler(async () => {
-  const config = useRuntimeConfig();
+export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig(event);
   const apiKey = config.twelveDataApiKey as string;
 
   if (!apiKey) {
