@@ -6,5 +6,8 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
   compatibilityDate: "2025-07-15",
+  runtimeConfig: {
+    twelveDataApiKey: process.env.TWELVE_DATA_API_KEY,
+  },
   devtools: { enabled: true },
 });
